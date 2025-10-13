@@ -65,9 +65,9 @@ public class CrudMongoDbAtlas {
         try {
             System.out.println("------------------- Inserindo aluno no MongoDB ----------------- ");
             
-            Document document = new Document("nome", nome)
-                    .append("idade", idade)
-                    .append("cidade", cidade);
+            Document document = new Document("Nome", nome)
+                    .append("Idade", idade)
+                    .append("Cidade", cidade);
             
             InsertOneResult result = collection.insertOne(document);
             System.out.println("Documento inserido satisfatoriamente!");
@@ -132,7 +132,7 @@ public class CrudMongoDbAtlas {
             
             // Inserir um novo aluno
             System.out.println("\n>>> Inserindo novo aluno...");
-            boolean inserido = app.insereUmAluno("Maria Santos", 22, "Rio de Janeiro");
+            boolean inserido = app.insereUmAluno("Maria Santos2", 22, "Rio de Janeiro");
             
             if (inserido) {
                 // Buscar o aluno inserido
