@@ -1,6 +1,9 @@
 /*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ * esse codigo funciona em:"JProduct Version: Apache NetBeans IDE 25
+Java: 21.0.6; OpenJDK 64-Bit Server VM 21.0.6+2
+Runtime: OpenJDK Runtime Environment 21.0.6+2
+System: Linux version 5.0.0-23-generic running on amd64; UTF-8; pt_BR (nb)
+ * Autor: Shermila Guerra Santa Cruz
  */
 package com.mycompany.crud2mongodbatlas;
 
@@ -106,9 +109,9 @@ public class CrudMongoDbAtlas {
             if (count > 0) {
                 System.out.println("\nLista de alunos:");
                 for (Document doc : collection.find()) {
-                    System.out.println("- Nome: " + doc.getString("nome") + 
-                                     ", Idade: " + doc.getInteger("idade") + 
-                                     ", Cidade: " + doc.getString("cidade"));
+                    System.out.println("- Nome: " + doc.getString("Nome") + 
+                                     ", Idade: " + doc.getInteger("Idade") + 
+                                     ", Cidade: " + doc.getString("Cidade"));
                 }
             }
         } catch (Exception e) {
