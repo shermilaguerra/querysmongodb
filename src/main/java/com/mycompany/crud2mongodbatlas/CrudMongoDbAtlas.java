@@ -1,0 +1,151 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
+package com.mycompany.crud2mongodbatlas;
+
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.result.DeleteResult;
+import com.mongodb.client.result.InsertOneResult;
+import org.bson.Document;
+
+import static com.mongodb.client.model.Filters.eq;
+
+public class CrudMongoDbAtlas {
+    
+    private MongoCollection<Document> collection;
+    
+    public CrudMongoDbAtlas() {
+        // Construtor vazio
+    }
+    
+    public void inicializarConexao() {
+        String uri = "mongodb+srv://milastoreadm_db_user:YhOcAwYEmY3t1HNr@clusterjava2.zodgfal.mongodb.net/?retryWrites=true&w=majority";
+        
+        try {
+            MongoClient mongoClient = MongoClients.create(uri);
+            MongoDatabase database = mongoClient.getDatabase("matriculas");
+            this.collection = database.getCollection("estudantes");
+            System.out.println("Conexão estabelecida com sucesso!");
+        } catch (Exception e) {
+            System.err.println("Erro na conexão: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+    
+    public boolean deletaUmAluno(String nome) {
+        try {
+            System.out.println("------------------- Deletando aluno no MongoDB ----------------- ");
+            DeleteResult deleteResult = collection.deleteOne(eq("nome", nome));
+            long deletedCount = deleteResult.getDeletedCount();
+            
+            System.out.println("Deleted " + deletedCount + " document(s).");
+            
+            if (deletedCount > 0) {
+                System.out.println("Aluno deletado satisfatoriamente!");
+                return true;
+            } else {
+                System.out.println("Nenhum aluno encontrado com o nome: " + nome);
+                return false;
+            }
+        } catch (Exception e) {
+            System.err.println("Erro ao deletar aluno: " + e.getMessage());
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean insereUmAluno(String nome, int idade, String cidade) {
+        try {
+            System.out.println("------------------- Inserindo aluno no MongoDB ----------------- ");
+            
+            Document document = new Document("nome", nome)
+                    .append("idade", idade)
+                    .append("cidade", cidade);
+            
+            InsertOneResult result = collection.insertOne(document);
+            System.out.println("Documento inserido satisfatoriamente!");
+            return result.wasAcknowledged();
+            
+        } catch (Exception e) {
+            System.err.println("Erro ao inserir aluno: " + e.getMessage());
+            e.printStackTrace();
+            return false;
+        }
+    }
+    
+    public void buscaAlunoPorNome(String nome) {
+        try {
+            System.out.println("------------------- Buscando aluno no MongoDB ----------------- ");
+            Document doc = collection.find(eq("nome", nome)).first();
+            
+            if (doc != null) {
+                System.out.println("\nAluno encontrado:");
+                System.out.println("Nome: " + doc.getString("nome"));
+                System.out.println("Idade: " + doc.getInteger("idade"));
+                System.out.println("Cidade: " + doc.getString("cidade"));
+                System.out.println("JSON: " + doc.toJson() + "\n");
+            } else {
+                System.out.println("Não encontrou nenhum aluno com o nome: " + nome);
+            }
+        } catch (Exception e) {
+            System.err.println("Erro ao buscar aluno: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+    
+    public void listaTodosAlunos() {
+        try {
+            System.out.println("------------------- Listando todos os alunos ----------------- ");
+            long count = collection.countDocuments();
+            System.out.println("Total de alunos: " + count);
+            
+            if (count > 0) {
+                System.out.println("\nLista de alunos:");
+                for (Document doc : collection.find()) {
+                    System.out.println("- Nome: " + doc.getString("nome") + 
+                                     ", Idade: " + doc.getInteger("idade") + 
+                                     ", Cidade: " + doc.getString("cidade"));
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("Erro ao listar alunos: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    public static void main(String[] args) {
+        CrudMongoDbAtlas app = new CrudMongoDbAtlas();
+        app.inicializarConexao();
+        
+        if (app.collection != null) {
+            System.out.println("=== TESTANDO OPERAÇÕES CRUD ===");
+            
+            // Listar alunos existentes
+            app.listaTodosAlunos();
+            
+            // Inserir um novo aluno
+            System.out.println("\n>>> Inserindo novo aluno...");
+            boolean inserido = app.insereUmAluno("Maria Santos", 22, "Rio de Janeiro");
+            
+            if (inserido) {
+                // Buscar o aluno inserido
+                System.out.println("\n>>> Buscando aluno inserido...");
+                app.buscaAlunoPorNome("Maria Santos");
+                
+                // Deletar o aluno
+                System.out.println("\n>>> Deletando aluno...");
+                app.deletaUmAluno("Maria Santos");
+            }
+            
+            // Tentativa de deletar aluno que não existe
+            System.out.println("\n>>> Tentando deletar aluno inexistente...");
+            app.deletaUmAluno("AlunoInexistente");
+        }
+        
+        System.out.println("------------------------- Final da execução ---------------- ");
+    }
+}
