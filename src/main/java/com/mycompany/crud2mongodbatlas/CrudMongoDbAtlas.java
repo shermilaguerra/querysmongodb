@@ -26,6 +26,8 @@ public class CrudMongoDbAtlas {
     }
     
     public void inicializarConexao() {
+        //"mongodb+srv://milastoreadm_db_user:YhOcAwYEmY3t1HNr@clusterjava2.zodgfal.mongodb.net/?retryWrites=true&w=majority";
+                     
         String uri = "mongodb+srv://milastoreadm_db_user:YhOcAwYEmY3t1HNr@clusterjava2.zodgfal.mongodb.net/?retryWrites=true&w=majority";
         
         try {
@@ -35,14 +37,14 @@ public class CrudMongoDbAtlas {
             System.out.println("Conexão estabelecida com sucesso!");
         } catch (Exception e) {
             System.err.println("Erro na conexão: " + e.getMessage());
-            e.printStackTrace();
+  
         }
     }
     
     public boolean deletaUmAluno(String nome) {
         try {
             System.out.println("------------------- Deletando aluno no MongoDB ----------------- ");
-            DeleteResult deleteResult = collection.deleteOne(eq("nome", nome));
+            DeleteResult deleteResult = collection.deleteOne(eq("Nome", nome));
             long deletedCount = deleteResult.getDeletedCount();
             
             System.out.println("Deleted " + deletedCount + " document(s).");
@@ -65,7 +67,7 @@ public class CrudMongoDbAtlas {
         try {
             System.out.println("------------------- Inserindo aluno no MongoDB ----------------- ");
             
-            Document document = new Document("Nome", nome)
+            Document document = new Document("Nome", nome)               
                     .append("Idade", idade)
                     .append("Cidade", cidade);
             
@@ -75,7 +77,7 @@ public class CrudMongoDbAtlas {
             
         } catch (Exception e) {
             System.err.println("Erro ao inserir aluno: " + e.getMessage());
-            e.printStackTrace();
+            
             return false;
         }
     }
@@ -83,13 +85,13 @@ public class CrudMongoDbAtlas {
     public void buscaAlunoPorNome(String nome) {
         try {
             System.out.println("------------------- Buscando aluno no MongoDB ----------------- ");
-            Document doc = collection.find(eq("nome", nome)).first();
+            Document doc = collection.find(eq("Nome", nome)).first();
             
             if (doc != null) {
                 System.out.println("\nAluno encontrado:");
-                System.out.println("Nome: " + doc.getString("nome"));
-                System.out.println("Idade: " + doc.getInteger("idade"));
-                System.out.println("Cidade: " + doc.getString("cidade"));
+                System.out.println("Nome: " + doc.getString("Nome"));
+                System.out.println("Idade: " + doc.getInteger("Idade"));
+                System.out.println("Cidade: " + doc.getString("Cidade"));
                 System.out.println("JSON: " + doc.toJson() + "\n");
             } else {
                 System.out.println("Não encontrou nenhum aluno com o nome: " + nome);
@@ -132,21 +134,21 @@ public class CrudMongoDbAtlas {
             
             // Inserir um novo aluno
             System.out.println("\n>>> Inserindo novo aluno...");
-            boolean inserido = app.insereUmAluno("Maria Santos2", 22, "Rio de Janeiro");
+            boolean inserido = app.insereUmAluno("Martha Prado", 29, "São Paulo");
             
             if (inserido) {
                 // Buscar o aluno inserido
-                System.out.println("\n>>> Buscando aluno inserido...");
-                app.buscaAlunoPorNome("Maria Santos");
+                System.out.println("\n>>>Procurando aluno inserido...");
+                app.buscaAlunoPorNome("Martha Prado");
                 
                 // Deletar o aluno
                 System.out.println("\n>>> Deletando aluno...");
-                app.deletaUmAluno("Maria Santos");
+                app.deletaUmAluno("Martha Prado");
             }
             
             // Tentativa de deletar aluno que não existe
-            System.out.println("\n>>> Tentando deletar aluno inexistente...");
-            app.deletaUmAluno("AlunoInexistente");
+            //System.out.println("\n>>> Tentando deletar aluno inexistente...");
+            //app.deletaUmAluno("AlunoInexistente");
         }
         
         System.out.println("------------------------- Final da execução ---------------- ");
